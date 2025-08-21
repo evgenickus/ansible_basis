@@ -1,0 +1,22 @@
+- name: Greate RG
+  hosts: localhost
+  vars_files:
+    - vars.yaml
+  tasks:
+  - name: manage resource group
+    decort_rg:
+     authenticator: decs3o
+     app_id: "{{ app_id }}"
+     app_secret: "{{ app_secret }}"
+     controller_url: "{{ controller_url }}"
+     oauth2_url: "{{ oauth2_url }}"
+     account_id: 3
+     rg_name: "Ansible Created RG"
+    #  sdn_access_group_id: "123"
+     state: present
+    register: my_rg
+
+  - name: Output
+    debug:
+      var: my_rg
+
