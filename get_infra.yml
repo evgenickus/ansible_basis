@@ -1,22 +1,19 @@
-- name: Greate RG
+- name: Get RG
   hosts: localhost
   vars_files:
+    - secret
     - vars.yaml
   tasks:
-  - name: manage resource group
+  - name: get resource group info
     decort_rg:
-     authenticator: decs3o
+     authenticator: "{{ authenticator }}"
      app_id: "{{ app_id }}"
      app_secret: "{{ app_secret }}"
      controller_url: "{{ controller_url }}"
      oauth2_url: "{{ oauth2_url }}"
-     account_id: 3
+     account_id: "{{ account_id }}"
      rg_name: "Ansible Created RG"
-    #  sdn_access_group_id: "123"
-     state: present
     register: my_rg
-
-  - name: Output
+  - name: Display the gathered facts
     debug:
-      var: my_rg
-
+      var: my_rg.facts

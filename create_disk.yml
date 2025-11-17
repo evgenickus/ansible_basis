@@ -1,0 +1,26 @@
+- name: Create disk
+  hosts: localhost
+#  no_log: true
+  vars_files:
+    - secret
+    - vars.yaml
+  tasks:
+  - name: create data disk 01
+    decort_disk:
+     authenticator: "{{ authenticator }}"
+     app_id: "{{ app_id }}"
+     app_secret: "{{ app_secret }}"
+     controller_url: "{{ controller_url }}"
+     oauth2_url: "{{ oauth2_url }}"
+     account_id: "{{ account_id }}"
+     name: "example_disk"
+     sep_id: 1
+     size: 2
+     description: "Disk created by decort_disk module"
+     iops: 2000
+     state: present
+     verify_ssl: false
+    register: my_disk
+  - name: Get my_disl info
+    debug:
+     var: my_disk.facts

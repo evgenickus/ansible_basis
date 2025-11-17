@@ -1,0 +1,25 @@
+- name: Create VM
+  hosts: localhost
+  vars_files:
+    - secret
+    - vars.yaml
+  tasks:
+  - name: Create VM_1
+    decort_kvmvm:
+     app_id: "{{ app_id }}"
+     app_secret: "{{ app_secret }}"
+     controller_url: "{{ controller_url }}"
+     oauth2_url: "{{ oauth2_url }}"
+     account_id: "{{ account_id }}"
+     rg_id: "{{ my_rg.facts.id }}"
+     name: "Ansible Created VM_1"
+     image_id: 8
+     chipset: i440fx
+     cpu: 2
+     ram: 8192
+     boot:
+      disk_size: 20
+     networks:
+       - type: VINS
+         id: "{{ my_rg.facts.ViNS[0] }}"
+     state: started

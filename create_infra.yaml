@@ -1,0 +1,79 @@
+- name: Greate RG
+  hosts: localhost
+  vars_files:
+    - secret
+    - vars.yaml
+  tasks:
+  - name: Create resource group
+    decort_rg:
+     authenticator: "{{ authenticator }}"
+     app_id: "{{ app_id }}"
+     app_secret: "{{ app_secret }}"
+     controller_url: "{{ controller_url }}"
+     oauth2_url: "{{ oauth2_url }}"
+     account_id: "{{ account_id }}"
+     rg_name: "Ansible Created RG"
+     def_netType: NONE
+     permanently: True
+     description: Created By Polyakov E.E. with Ansible IT automation engine
+     state: present
+    register: my_rg
+
+  - name: Create ViNS
+    decort_vins:
+     app_id: "{{ app_id }}"
+     app_secret: "{{ app_secret }}"
+     controller_url: "{{ controller_url }}"
+     oauth2_url: "{{ oauth2_url }}"
+     account_id: "{{ account_id }}"
+     vins_name: "Ansible Created ViNS"
+     rg_id: "{{ my_rg.facts.id }}"
+     state: present
+    register: my_vins
+
+  - name: Create VM_1
+    decort_kvmvm:
+     app_id: "{{ app_id }}"
+     app_secret: "{{ app_secret }}"
+     controller_url: "{{ controller_url }}"
+     oauth2_url: "{{ oauth2_url }}"
+     account_id: "{{ account_id }}"
+     rg_id: "{{ my_rg.facts.id }}"
+     name: "Ansible Created VM_1"
+     image_id: 8
+     chipset: i440fx
+     cpu: 2
+     ram: 8192
+     boot:
+      disk_size: 20
+     networks:
+       - type: VINS
+         id: "{{ my_rg.facts.ViNS[0] }}"
+     state: started
+
+  - name: Create VM_2
+    decort_kvmvm:
+     app_id: "{{ app_id }}"
+     app_secret: "{{ app_secret }}"
+     controller_url: "{{ controller_url }}"
+     oauth2_url: "{{ oauth2_url }}"
+     account_id: "{{ account_id }}"
+     rg_id: "{{ my_rg.facts.id }}"
+     name: "Ansible Created VM_2"
+     image_id: 8
+     chipset: i440fx
+     cpu: 2
+     ram: 8192
+     boot:
+      disk_size: 20
+     networks:
+       - type: VINS
+         id: "{{ my_rg.facts.ViNS[0] }}"
+     state: started
+
+  - name: Get rg info
+    debug:
+      var: my_rg.facts
+  - name: Get vins info
+    debug:
+      var: my_vins.facts

@@ -1,3 +1,4 @@
 .vscode/
 vars.yaml
 decort-ansible/
+secret
